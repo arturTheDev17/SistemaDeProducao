@@ -22,7 +22,7 @@ public class DataWelder extends Data {
     public String toString() {
         return super.toString() +
                 "Current (A): " + this.current +
-                "\nActive time (minutes): " + this.activeTime;
+                "\nActive time (minutes): " + this.activeTime + "\n";
     }
 
     @Override

@@ -15,7 +15,14 @@ public class Lathe extends Machine {
     //sensor atualizou
     @Override
     public void changeData(Data data) {
-        this.data = (DataLathe) data;
+        if (this.data != null) {
+            String machineName = this.data.getMachineName();
+            this.data = (DataLathe) data;
+            this.data.setMachineName(machineName);
+        } else {
+            this.data = (DataLathe) data;
+        }
+
         publish(this.data);
     }
 

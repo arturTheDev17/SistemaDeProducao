@@ -1,6 +1,7 @@
 package machine;
 
 import data.Data;
+import data.DataLathe;
 import data.DataWelder;
 
 public class Welder extends Machine {
@@ -14,7 +15,13 @@ public class Welder extends Machine {
 
     @Override
     public void changeData(Data data) {
-        this.data = (DataWelder) data;
+        if (this.data != null) {
+            String machineName = this.data.getMachineName();
+            this.data = (DataWelder) data;
+            this.data.setMachineName(machineName);
+        } else {
+            this.data = (DataWelder) data;
+        }
         publish(this.data);
     }
 
