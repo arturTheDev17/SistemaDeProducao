@@ -106,17 +106,19 @@ public class InformationPanel implements ObserverData {
 
             if (value instanceof DataLathe lathe) {
                 setText(
-                        "<html>Machine name: " + lathe.getMachineName() +
+                        "<html>\u200E<br/>"+
+                        "Machine name: " + lathe.getMachineName() +
                         "<br/>Temperature: " + lathe.getTemperature() +
                         "<br/>Rotation Speed: " + lathe.getRotationSpeed() +
-                        "<br/>Collision: " + lathe.isCollision()
+                        "<br/>Collision: " + lathe.isCollision() + "<br/>\u200E"
                 );
             } else if (value instanceof DataWelder welder) {
                 setText(
-                        "<html>Machine name: " + welder.getMachineName() +
+                        "<html>\u200E<br/>"+
+                        "Machine name: " + welder.getMachineName() +
                         "<br/>Temperature: " + welder.getTemperature() +
                         "<br/>Current: " + welder.getCurrent() +
-                        "<br/>Active time: " + welder.getActiveTime()
+                        "<br/>Active time: " + welder.getActiveTime() + "<br/>\u200E"
                 );
             }
 //            Student label = (Student) value;

@@ -50,7 +50,8 @@ public class Main {
         Random ran = new Random();
         for ( Lathe lathe : LATHE_MACHINES ) {
 
-            double temperature = (ran.nextDouble(-20 , 100));
+//            double temperature = (ran.nextDouble(-20.0 , 100.0));
+            double temperature = (ran.nextDouble()*120 - 20);
             int rotationSpeed = (ran.nextInt(10000));
             boolean collision = (ran.nextBoolean());
 
@@ -62,8 +63,10 @@ public class Main {
         Random ran = new Random();
         for ( Welder welder : WELD_MACHINES ) {
 
-            double temperature = (ran.nextDouble(-20 , 100));
-            double current = (ran.nextDouble(200));
+//            double temperature = (ran.nextDouble(-20.0 , 100.0));
+            double temperature = (ran.nextDouble()*120 - 20);
+//            double current = (ran.nextDouble(200.0));
+            double current = (ran.nextDouble()*200);
             double activeTime = (ran.nextDouble());
 
             welder.changeData( new DataWelder( temperature , current, activeTime ) );
