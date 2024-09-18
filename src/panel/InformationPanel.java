@@ -121,11 +121,6 @@ public class InformationPanel implements ObserverData {
                         "<br/>Active time: " + welder.getActiveTime() + "<br/>\u200E"
                 );
             }
-//            Student label = (Student) value;
-//            String name = label.getName();
-//            int age = label.getAge();
-//            String labelText = "<html>Name: " + name + "<br/>Age: " + age;
-//            setText(labelText);
 
             return this;
         }

@@ -33,7 +33,7 @@ public class Main {
         for (int i = 0; i < 5; i++) {
             LATHE_MACHINES.add((Lathe) LATHE_MACHINE_MAKER.newMachine());
             LATHE_MACHINES.get(i).subscribe( MEDIATOR );
-            //TODO machinename ta null vei
+            //TODO machinename não ta mais null vei
             LATHE_MACHINES.get(i).changeData(new DataLathe("Lathe " + i, 30, 3000, false));
         }
 
