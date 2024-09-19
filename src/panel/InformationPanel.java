@@ -45,7 +45,7 @@ public class InformationPanel implements ObserverData {
         //Cria um título para a aplicação
         JLabel titulo = new JLabel("Lista de máquinas");
         titulo.setFont(titulo.getFont().deriveFont(24.0f));
-        titulo.setBounds((1300 - titulo.getPreferredSize().width) / 2, 20, 300, 50);
+        titulo.setBounds((700 - titulo.getPreferredSize().width) / 2, 20, 300, 50);
 
         // Jlabel vazio para solucionar erro
         JLabel erro = new JLabel();
@@ -56,7 +56,7 @@ public class InformationPanel implements ObserverData {
 
         listaMaquinas.setBackground( new java.awt.Color( 220, 220, 255 ) );
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(50, 80, 1180, 370);
+        scrollPane.setBounds(50, 120, 580, 370);
         scrollPane.setViewportView(listaMaquinas);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -65,10 +65,21 @@ public class InformationPanel implements ObserverData {
         // Cria um JDialog para a aplicação
         JDialog dialog = new JDialog();
         dialog.setTitle("Lista de Maquinas");
-        dialog.setSize(1300, 700);
+        dialog.setSize(700, 700);
         dialog.setLocationRelativeTo(null);
         dialog.setLayout(null);
         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        // Cria um JTabbedPane para a aplicação
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setSize(700,700);
+
+        // Cria um JPanel para a aba de Welders
+        JPanel panelWelders = new JPanel();
+        panelWelders.setLayout( null );
+        panelWelders.setSize(700, 700);
+        panelWelders.setBackground(Color.white);
+
 
         // Adiciona os elementos na tela
         dialog.add(titulo);
