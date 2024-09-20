@@ -4,6 +4,7 @@ import data.Data;
 import data.DataMachine;
 import data.DataLathe;
 import data.DataWelder;
+import factory.WeldMachineMaker;
 import structure.Observer;
 
 import javax.swing.*;
@@ -136,8 +137,9 @@ public class InformationPanel implements Observer {
         dialog.setVisible(true);
 
         buttonWelder.addActionListener(e -> {
-            dialog.setVisible(false);
-            dialog.dispose();
+
+            WeldMachineMaker.welderCreation();
+
         });
     }
 
@@ -149,7 +151,7 @@ public class InformationPanel implements Observer {
     }
 
 
-    private static DefaultListModel getMachinesData(String className) {
+    private DefaultListModel getMachinesData(String className) {
         // Inicia a lista de máquinas
         DefaultListModel listModel = new DefaultListModel<>();
 

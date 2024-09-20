@@ -3,11 +3,10 @@ package data;
 public class DataWelder extends DataMachine {
     private double current;
     private double activeTime;
-
     public DataWelder() {}
 
-    public DataWelder(String machineName, double temperature, double current, double activeTime ) {
-        super( machineName , temperature );
+    public DataWelder( double[] parameters, String machineName, double temperature, double current, double activeTime ) {
+        super( machineName , temperature, parameters );
         this.current = current;
         this.activeTime = activeTime;
     }

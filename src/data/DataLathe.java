@@ -6,8 +6,8 @@ public class DataLathe extends DataMachine {
 
     public DataLathe() {}
 
-    public DataLathe(String machineName ,double temperature, int rotationSpeed, boolean collision ) {
-        super(machineName, temperature);
+    public DataLathe(double[] parameters, String machineName ,double temperature, int rotationSpeed, boolean collision ) {
+        super(machineName, temperature, parameters);
         this.rotationSpeed = rotationSpeed;
         this.collision = collision;
     };

@@ -3,6 +3,7 @@ package data;
 public abstract class DataMachine implements Data {
     private String machineName;
     private double temperature;
+    private double[] parameters;
 
     public DataMachine() {};
 
@@ -10,9 +11,10 @@ public abstract class DataMachine implements Data {
         this.temperature = temperature;
     };
 
-    public DataMachine(String machineName, double temperature) {
+    public DataMachine(String machineName, double temperature , double[] parameters) {
         this.machineName = machineName;
         this.temperature = temperature;
+        this.parameters = parameters;
     };
 
     @Override
@@ -35,5 +37,13 @@ public abstract class DataMachine implements Data {
 
     public String getMachineName() {
         return machineName;
+    }
+
+    public double[] getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(double[] parameters) {
+        this.parameters = parameters;
     }
 }

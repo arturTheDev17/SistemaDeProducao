@@ -1,46 +1,42 @@
 package data;
 
-public abstract class DataEmployee implements Data {
+import java.util.ArrayList;
 
-    private String nameEmployee;
+public class DataEmployee implements Data {
+    //TODO personalizar para ter subclasse de chefe e peao
 
-    private String titleLog;
-
-    private String messageLog;
+    private ArrayList<String> problems;
 
     public String typeEmployee;
 
+    public String machineName;
 
-    public DataEmployee(String nameEmployee, String titleLog, String messageLog, String typeEmployee) {
-        this.nameEmployee = nameEmployee;
-        this.titleLog = titleLog;
-        this.messageLog = messageLog;
+
+    public DataEmployee(ArrayList<String> problems, String typeEmployee, String machineName) {
+        this.problems = problems;
         this.typeEmployee = typeEmployee;
+        this.machineName = machineName;
     }
 
     public DataEmployee() {};
 
-    public String getNameEmployee() {
-        return nameEmployee;
+    public String getTypeEmployee() {
+        return typeEmployee;
     }
 
-    public String getTitleLog() {
-        return titleLog;
+    public void setTypeEmployee(String typeEmployee) {
+        this.typeEmployee = typeEmployee;
     }
 
-    public String getMessageLog() {
-        return messageLog;
+    public String getMachineName() {
+        return machineName;
     }
 
-    public void setNameEmployee(String nameEmployee) {
-        this.nameEmployee = nameEmployee;
+    public void setMachineName(String machineName) {
+        this.machineName = machineName;
+    }
+    public ArrayList<String> getProblems() {
+        return problems;
     }
 
-    public void setTitleLog(String titleLog) {
-        this.titleLog = titleLog;
-    }
-
-    public void setMessageLog(String messageLog) {
-        this.messageLog = messageLog;
-    }
 }
