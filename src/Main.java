@@ -11,6 +11,9 @@ import structure.Mediator;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -40,9 +43,11 @@ public class Main {
         MEDIATOR.subscribe( new InformationPanel());
         //gerador de dados aleatorios
         while (true) {
-            randomizerLatheData();
-            randomizerWelderData();
-            Thread.sleep(10000);
+//            randomizerLatheData();
+//            randomizerWelderData();
+            randomizerWelderDataAsync();
+            randomizerLatheDataAsync();
+            Thread.sleep(5000);
         }
     }
 
@@ -67,9 +72,39 @@ public class Main {
             double temperature = (ran.nextDouble()*120 - 20);
 //            double current = (ran.nextDouble(200.0));
             double current = (ran.nextDouble()*200);
-            double activeTime = (ran.nextDouble());
+            double activeTime = (ran.nextDouble()*120);
 
             welder.changeData( new DataWelder( temperature , current, activeTime ) );
+        }
+    }
+
+    private static void randomizerWelderDataAsync() {
+        Random ran = new Random();
+        for ( Welder welder : WELD_MACHINES ) {
+            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            executor.schedule(() -> {
+                double temperature = (ran.nextDouble()*120 - 20);
+                double current = (ran.nextDouble()*200);
+                double activeTime = (ran.nextDouble()*120);
+
+                welder.changeData( new DataWelder( temperature , current, activeTime ) );
+            }, (long) (Math.random() * 5), TimeUnit.SECONDS);
+
+        }
+    }
+
+    private static void randomizerLatheDataAsync() {
+        Random ran = new Random();
+        for ( Lathe lathe : LATHE_MACHINES ) {
+
+            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            executor.schedule(() -> {
+                double temperature = (ran.nextDouble()*120 - 20);
+                int rotationSpeed = (ran.nextInt(10000));
+                boolean collision = (ran.nextBoolean());
+
+                lathe.changeData( new DataLathe( temperature , rotationSpeed , collision ) );
+            }, (long) (Math.random() * 5), TimeUnit.SECONDS);
         }
     }
 }

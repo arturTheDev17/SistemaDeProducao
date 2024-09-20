@@ -36,29 +36,48 @@ public class InformationPanel implements ObserverData {
 
     // Criação da tela
 
-    private static final JList<String> listaMaquinas = new JList<>();
+    private static final JList<String> WELDERS_LIST = new JList<>();
+    private static final JList<String> LATHES_LIST = new JList<>();
 
     private void screen() {
 
         /// Elementos da tela de lista de máquinas
 
-        //Cria um título para a aplicação
-        JLabel titulo = new JLabel("Lista de máquinas");
-        titulo.setFont(titulo.getFont().deriveFont(24.0f));
-        titulo.setBounds((700 - titulo.getPreferredSize().width) / 2, 20, 300, 50);
+        //Cria um título para a página de Welders
+        JLabel tituloWelder = new JLabel("Lista de Welders");
+        tituloWelder.setFont(tituloWelder.getFont().deriveFont(24.0f));
+        tituloWelder.setBounds((700 - tituloWelder.getPreferredSize().width) / 2, 20, 300, 50);
+
+        //Cria um título para a página de Lathes
+        JLabel tituloLathe = new JLabel("Lista de Lathes");
+        tituloLathe.setFont(tituloLathe.getFont().deriveFont(24.0f));
+        tituloLathe.setBounds((700 - tituloLathe.getPreferredSize().width) / 2, 20, 300, 50);
+
 
         // Jlabel vazio para solucionar erro
-        JLabel erro = new JLabel();
+        JLabel erroWelder = new JLabel();
+        JLabel erroLathe = new JLabel();
 
-        /// Cria os elementos da JList
-        listaMaquinas.setModel(getMachinesData());
-        listaMaquinas.setCellRenderer(new MyListCellRenderer());
 
-        listaMaquinas.setBackground( new java.awt.Color( 220, 220, 255 ) );
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(50, 120, 580, 370);
-        scrollPane.setViewportView(listaMaquinas);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        /// Cria os elementos da JList de Welders
+        WELDERS_LIST.setModel(getMachinesData("DataWelder"));
+        WELDERS_LIST.setCellRenderer(new MyListCellRenderer());
+
+        WELDERS_LIST.setBackground( new java.awt.Color( 220, 220, 255 ) );
+        JScrollPane scrollPaneWelder = new JScrollPane();
+        scrollPaneWelder.setBounds(50, 120, 580, 370);
+        scrollPaneWelder.setViewportView(WELDERS_LIST);
+        scrollPaneWelder.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        /// Cria os elementos da JList de Lathes
+        LATHES_LIST.setModel(getMachinesData("DataLathe"));
+        LATHES_LIST.setCellRenderer(new MyListCellRenderer());
+
+        LATHES_LIST.setBackground( new java.awt.Color( 220, 220, 255 ) );
+        JScrollPane scrollPaneLathe = new JScrollPane();
+        scrollPaneLathe.setBounds(50, 120, 580, 370);
+        scrollPaneLathe.setViewportView(LATHES_LIST);
+        scrollPaneLathe.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         /// Criação da tela com JDialog
 
@@ -80,23 +99,46 @@ public class InformationPanel implements ObserverData {
         panelWelders.setSize(700, 700);
         panelWelders.setBackground(Color.white);
 
+        // Adiciona os elementos na aba de welders
+        panelWelders.add(tituloWelder);
+        panelWelders.add(scrollPaneWelder);
+        panelWelders.add(erroWelder);
+
+        // Cria um JPanel para a aba de Lathes
+        JPanel panelLathes = new JPanel();
+        panelLathes.setLayout( null );
+        panelLathes.setSize(700, 700);
+        panelLathes.setBackground(Color.white);
+
+        // Adiciona os elementos na aba de welders
+        panelLathes.add(tituloLathe);
+        panelLathes.add(scrollPaneLathe);
+        panelLathes.add(erroLathe);
+
+
+        // Adiciona as abas no JDialog
+        tabbedPane.add("Welders", panelWelders);
+        tabbedPane.add("Lathes", panelLathes);
+        dialog.add(tabbedPane);
 
         // Adiciona os elementos na tela
-        dialog.add(titulo);
-        dialog.add(scrollPane);
-        dialog.add(erro);
+//        dialog.add(titulo);
+//        dialog.add(scrollPane);
+//        dialog.add(erro);
 
         // Exibe a tela
         dialog.setVisible(true);
     }
 
     private void updateDataScreen() {
-        listaMaquinas.setModel(getMachinesData());
-        listaMaquinas.setCellRenderer(new MyListCellRenderer());
+        WELDERS_LIST.setModel(getMachinesData("DataWelder"));
+        WELDERS_LIST.setCellRenderer(new MyListCellRenderer());
+        LATHES_LIST.setModel(getMachinesData("DataLathe"));
+        LATHES_LIST.setCellRenderer(new MyListCellRenderer());
     }
 
 
-    private static DefaultListModel getMachinesData() {
+    private static DefaultListModel getMachinesData(String className) {
         // Inicia a lista de máquinas
         DefaultListModel listModel = new DefaultListModel<>();
 
@@ -104,7 +146,9 @@ public class InformationPanel implements ObserverData {
             String key = entry.getKey();
             Data value = entry.getValue();
 
-            listModel.addElement(value);
+            if(value.getClass().getSimpleName().equals(className)) {
+                listModel.addElement(value);
+            }
         }
         return listModel;
     }
@@ -119,17 +163,17 @@ public class InformationPanel implements ObserverData {
                 setText(
                         "<html>\u200E<br/>"+
                         "Machine name: " + lathe.getMachineName() +
-                        "<br/>Temperature: " + lathe.getTemperature() +
-                        "<br/>Rotation Speed: " + lathe.getRotationSpeed() +
-                        "<br/>Collision: " + lathe.isCollision() + "<br/>\u200E"
+                        "<br/>Temperature: " + (lathe.getTemperature() > 60 ? "<span style=\"color: #FF0000\">" + lathe.getTemperature() + "</span>" : "<span style=\"color: #00DD00\">" + lathe.getTemperature()) + "</span>" +
+                        "<br/>Rotation Speed: " + (lathe.getRotationSpeed() > 6000 ? "<span style=\"color: #FF0000\">" + lathe.getRotationSpeed() + "</span>" : "<span style=\"color: #00DD00\">" + lathe.getRotationSpeed()) + "</span>" +
+                        "<br/>Collision: " + (lathe.isCollision() ? "<span style=\"color: #FF0000\">" + lathe.isCollision() + "</span>" : "<span style=\"color: #00DD00\">" +  lathe.isCollision()) + "</span>" + "<br/>\u200E"
                 );
             } else if (value instanceof DataWelder welder) {
                 setText(
                         "<html>\u200E<br/>"+
                         "Machine name: " + welder.getMachineName() +
-                        "<br/>Temperature: " + welder.getTemperature() +
-                        "<br/>Current: " + welder.getCurrent() +
-                        "<br/>Active time: " + welder.getActiveTime() + "<br/>\u200E"
+                        "<br/>Temperature: " + (welder.getTemperature() > 60 ? "<span style=\"color: #FF0000\">" + welder.getTemperature() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getTemperature()) + "</span>" +
+                        "<br/>Current: " + (welder.getCurrent()  > 120 ? "<span style=\"color: #FF0000\">" + welder.getCurrent() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getCurrent()) + "</span>" +
+                        "<br/>Active time: " + (welder.getActiveTime()  > 60 ? "<span style=\"color: #FF0000\">" + welder.getActiveTime() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getActiveTime()) + "</span>" + "<br/>\u200E"
                 );
             }
 
