@@ -44,15 +44,23 @@ public class InformationPanel implements ObserverData {
         /// Elementos da tela de lista de máquinas
 
         //Cria um título para a página de Welders
-        JLabel tituloWelder = new JLabel("Lista de Welders");
+        JLabel tituloWelder = new JLabel("Subscribed Welders");
         tituloWelder.setFont(tituloWelder.getFont().deriveFont(24.0f));
         tituloWelder.setBounds((700 - tituloWelder.getPreferredSize().width) / 2, 20, 300, 50);
 
         //Cria um título para a página de Lathes
-        JLabel tituloLathe = new JLabel("Lista de Lathes");
+        JLabel tituloLathe = new JLabel("Subscribed Lathes");
         tituloLathe.setFont(tituloLathe.getFont().deriveFont(24.0f));
         tituloLathe.setBounds((700 - tituloLathe.getPreferredSize().width) / 2, 20, 300, 50);
 
+
+        //Create the button of the page of Welders
+        JButton buttonWelder = new JButton("Subscribe a new welder");
+        buttonWelder.setBounds( 380 , 660, 250, buttonWelder.getPreferredSize().height);
+
+        //Create the button of the page of Welders
+        JButton buttonLathe = new JButton("Subscribe a new lathe");
+        buttonLathe.setBounds( 380 , 660, 250, buttonLathe.getPreferredSize().height);
 
         // Jlabel vazio para solucionar erro
         JLabel erroWelder = new JLabel();
@@ -65,7 +73,7 @@ public class InformationPanel implements ObserverData {
 
         WELDERS_LIST.setBackground( new java.awt.Color( 220, 220, 255 ) );
         JScrollPane scrollPaneWelder = new JScrollPane();
-        scrollPaneWelder.setBounds(50, 120, 580, 370);
+        scrollPaneWelder.setBounds(50, 120, 580, 500);
         scrollPaneWelder.setViewportView(WELDERS_LIST);
         scrollPaneWelder.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -75,7 +83,7 @@ public class InformationPanel implements ObserverData {
 
         LATHES_LIST.setBackground( new java.awt.Color( 220, 220, 255 ) );
         JScrollPane scrollPaneLathe = new JScrollPane();
-        scrollPaneLathe.setBounds(50, 120, 580, 370);
+        scrollPaneLathe.setBounds(50, 120, 580, 500);
         scrollPaneLathe.setViewportView(LATHES_LIST);
         scrollPaneLathe.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -84,35 +92,37 @@ public class InformationPanel implements ObserverData {
         // Cria um JDialog para a aplicação
         JDialog dialog = new JDialog();
         dialog.setTitle("Lista de Maquinas");
-        dialog.setSize(700, 700);
+        dialog.setSize(700, 800);
         dialog.setLocationRelativeTo(null);
         dialog.setLayout(null);
         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Cria um JTabbedPane para a aplicação
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setSize(700,700);
+        tabbedPane.setSize(700,800);
 
         // Cria um JPanel para a aba de Welders
         JPanel panelWelders = new JPanel();
         panelWelders.setLayout( null );
-        panelWelders.setSize(700, 700);
+        panelWelders.setSize(700, 800);
         panelWelders.setBackground(Color.white);
 
         // Adiciona os elementos na aba de welders
         panelWelders.add(tituloWelder);
         panelWelders.add(scrollPaneWelder);
+        panelWelders.add(buttonWelder);
         panelWelders.add(erroWelder);
 
         // Cria um JPanel para a aba de Lathes
         JPanel panelLathes = new JPanel();
         panelLathes.setLayout( null );
-        panelLathes.setSize(700, 700);
+        panelLathes.setSize(700, 800);
         panelLathes.setBackground(Color.white);
 
         // Adiciona os elementos na aba de welders
         panelLathes.add(tituloLathe);
         panelLathes.add(scrollPaneLathe);
+        panelLathes.add(buttonLathe);
         panelLathes.add(erroLathe);
 
 
@@ -121,13 +131,13 @@ public class InformationPanel implements ObserverData {
         tabbedPane.add("Lathes", panelLathes);
         dialog.add(tabbedPane);
 
-        // Adiciona os elementos na tela
-//        dialog.add(titulo);
-//        dialog.add(scrollPane);
-//        dialog.add(erro);
-
         // Exibe a tela
         dialog.setVisible(true);
+
+        buttonWelder.addActionListener(e -> {
+            dialog.setVisible(false);
+            dialog.dispose();
+        });
     }
 
     private void updateDataScreen() {

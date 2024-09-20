@@ -10,13 +10,13 @@ public class DataWelder extends Data {
         super(machineName, temperature);
         this.current = current;
         this.activeTime = activeTime;
-    };
+    }
 
     public DataWelder( double temperature, double current, double activeTime ) {
         super(temperature);
         this.current = current;
         this.activeTime = activeTime;
-    };
+    }
 
     @Override
     public String toString() {

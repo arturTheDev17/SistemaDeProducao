@@ -6,6 +6,14 @@ import java.text.DecimalFormat;
 
 public class Lathe extends Machine {
 
+
+    public Lathe() {
+    }
+
+    public Lathe(DataLathe data) {
+        this.data = data;
+    }
+
     private DataLathe data;
 
     @Override

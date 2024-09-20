@@ -8,18 +8,23 @@ import java.text.DecimalFormat;
 
 public class Welder extends Machine {
 
+    public Welder() {
+
+    }
+
+    public Welder(DataWelder data) {
+        this.data = data;
+    }
+
     private DataWelder data;
 
     @Override
     public void publish( Data data ) {
-        getMediator().update( data ); //eu consigo chamar o pblish pelo machine, por conta d ter o objeto comigo
+        getMediator().update( data );
     }
 
     @Override
     public void changeData(Data data) {
-        //Round the data numbers
-        data = (DataWelder) data;
-
         DecimalFormat df2 = new DecimalFormat("#,00");
         data.setTemperature(Double.parseDouble(df2.format(data.getTemperature())));
         ((DataWelder) data).setActiveTime(Double.parseDouble(df2.format(((DataWelder) data).getActiveTime())));
