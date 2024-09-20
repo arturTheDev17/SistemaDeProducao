@@ -12,12 +12,9 @@ public class WeldMachineMaker implements MachineMaker {
     public static Welder welderCreation ( ) {
         JLabel 	name = new JLabel ( "Please insert the welder's name: " ) ,
                 nominalCurrent = new JLabel( "Please insert the current value given by the factory: " ),
-                preco = new JLabel( "Insira o preço do produto: " ),
-                potencia = new JLabel ( "Insira a potência: " ),
-                tensao = new JLabel ( "Insira a tensão (V): " ),
-                tipoEnrolamento = new JLabel ( "Insira o tipo de enrolamento: " ),
-                eficiencia = new JLabel ( "Insira a eficiência do motor: " );
-
+                minTemperature = new JLabel( "Please insert the minimum temperature handled by the machine: " ),
+                maxTemperature = new JLabel( "Please insert the minimum temperature handled by the machine: " ),
+                ;
         JTextField 	tfNome = new JTextField (),
                 tfPreco = new JTextField () ,
                 tfPotencia = new JTextField() ,
@@ -42,7 +39,7 @@ public class WeldMachineMaker implements MachineMaker {
         if ( teste == -1 ) {
             return null;
         }
-
+        Welder maquina = new Welder (    );
 //        Welder produto = new Welder (
 //                tfNome.getText() ,
 //                "Motor Elétrico",
@@ -53,7 +50,7 @@ public class WeldMachineMaker implements MachineMaker {
 //                Float.parseFloat( tfEficiencia.getText() )
 //        );
 
-        return new Welder();
+        return new Welder( tfNome.getText() ,  );
     }
 
 

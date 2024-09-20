@@ -1,27 +1,28 @@
 package panel;
 
 import data.Data;
+import data.DataMachine;
 import data.DataLathe;
 import data.DataWelder;
-import structure.ObserverData;
+import structure.Observer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InformationPanel implements ObserverData {
+public class InformationPanel implements Observer {
 
-    public static final Map<String, Data> MACHINES_DATA = new HashMap<String, Data>();
+    public static final Map<String, DataMachine> MACHINES_DATA = new HashMap<String, DataMachine>();
     private boolean screenActive = false;
 
     @Override
-    public void update(Data data) {
-        updateListOfMachines(data);
+    public void update(Data dataMachine) {
+        updateListOfMachines((DataMachine) dataMachine);
     }
 
-    public void updateListOfMachines(Data data) {
-        MACHINES_DATA.put(data.getMachineName(), data);
+    public void updateListOfMachines(DataMachine dataMachine) {
+        MACHINES_DATA.put(dataMachine.getMachineName(), dataMachine);
         showData();
     }
 
@@ -152,9 +153,9 @@ public class InformationPanel implements ObserverData {
         // Inicia a lista de máquinas
         DefaultListModel listModel = new DefaultListModel<>();
 
-        for(Map.Entry<String, Data> entry : MACHINES_DATA.entrySet()) {
+        for(Map.Entry<String, DataMachine> entry : MACHINES_DATA.entrySet()) {
             String key = entry.getKey();
-            Data value = entry.getValue();
+            DataMachine value = entry.getValue();
 
             if(value.getClass().getSimpleName().equals(className)) {
                 listModel.addElement(value);

@@ -1,7 +1,8 @@
 package machine;
 
-import data.DataLathe;
 import data.Data;
+import data.DataLathe;
+import data.DataMachine;
 import java.text.DecimalFormat;
 
 public class Lathe extends Machine {
@@ -17,25 +18,25 @@ public class Lathe extends Machine {
     private DataLathe data;
 
     @Override
-    public void publish( Data data ) {
-        getMediator().update( data );
+    public void publish( Data dataMachine) {
+        getMediator().update(dataMachine);
     }
 
     //sensor atualizou
     @Override
-    public void changeData(Data data) {
+    public void changeData(DataMachine dataMachine) {
         //Round the data numbers
-        data = (DataLathe) data;
+        dataMachine = (DataLathe) dataMachine;
 
         DecimalFormat df2 = new DecimalFormat("#,00");
-        data.setTemperature(Double.parseDouble(df2.format(data.getTemperature())));
+        dataMachine.setTemperature(Double.parseDouble(df2.format(dataMachine.getTemperature())));
 
         if (this.data != null) {
             String machineName = this.data.getMachineName();
-            this.data = (DataLathe) data;
+            this.data = (DataLathe) dataMachine;
             this.data.setMachineName(machineName);
         } else {
-            this.data = (DataLathe) data;
+            this.data = (DataLathe) dataMachine;
         }
 
         publish(this.data);

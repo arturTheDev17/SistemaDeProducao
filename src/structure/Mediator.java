@@ -1,12 +1,13 @@
 package structure;
 
 import data.Data;
+import data.DataMachine;
 import java.util.ArrayList;
 
-public class Mediator implements ObserverData, ObservableData, ObservableString {
+public class Mediator implements Observer, Observable {
 
-    public ArrayList<ObserverData> panelObservers = new ArrayList<>();
-    public ArrayList<ObserverString> panelEmployees  = new ArrayList<>();
+    public ArrayList<Observer> panelObservers = new ArrayList<>();
+    public ArrayList<Observer> panelEmployees  = new ArrayList<>();
 
     private Mediator mediator;
     public Mediator getInstance() {
@@ -18,43 +19,44 @@ public class Mediator implements ObserverData, ObservableData, ObservableString 
     }
 
     @Override
-    public void update(Data data) {
-        this.publish(data);
+    public void update(Data dataMachine) {
+        this.publish(dataMachine);
     }
 
     //Methods of ObserverString
 
-    @Override
-    public void subscribe(ObserverString observer) {
-        this.panelEmployees.add(observer);
-    }
+//    @Override
+//    public void subscribe(ObserverString observer) {
+//        this.panelEmployees.add(observer);
+//    }
 
-    @Override
-    public void publish(String data) {
-        //TODO publish to employees
-    }
+//    @Override
+//    public void publish(String data) {
+//        //TODO publish to employees
+//    }
 
-    @Override
-    public void unsubscribe(ObserverString observer) {
-        this.panelEmployees.remove(observer);
-    }
+//    @Override
+//    public void unsubscribe(ObserverString observer) {
+//        this.panelEmployees.remove(observer);
+//    }
 
     //Methods of ObserverData
 
     @Override
-    public void subscribe(ObserverData observer) {
+    public void subscribe(Observer observer) {
         this.panelObservers.add(observer);
     }
 
     @Override
-    public void publish( Data data ){
-        for( ObserverData observer : panelObservers ) {
-            observer.update( data );
+    public void publish(Data dataMachine) {
+        for( Observer observer : panelObservers ) {
+            observer.update(dataMachine);
         }
     }
 
     @Override
-    public void unsubscribe(ObserverData observer) {
+    public void unsubscribe(Observer observer) {
         this.panelObservers.remove(observer);
     }
+
 }

@@ -1,7 +1,5 @@
 package stakeholder;
 
-import structure.ObserverString;
-
-public abstract class Employee implements ObserverString {
+public abstract class Employee  {
     private String name;
 }

@@ -1,4 +1,3 @@
-import data.Data;
 import data.DataLathe;
 import data.DataWelder;
 import factory.LatheMachineMaker;
@@ -30,7 +29,6 @@ public class Main {
         for (int i = 0; i < 5; i++) {
             WELD_MACHINES.add((Welder) WELD_MACHINE_MAKER.newMachine());
             WELD_MACHINES.get(i).subscribe( MEDIATOR );
-            WELD_MACHINES.get(i).changeData(new DataWelder("Welder " + i, 30.0, 100, 0 ));
         }
 
         for (int i = 0; i < 5; i++) {
@@ -74,7 +72,7 @@ public class Main {
             double current = (ran.nextDouble()*200);
             double activeTime = (ran.nextDouble()*120);
 
-            welder.changeData( new DataWelder( temperature , current, activeTime ) );
+            welder.changeData( new DataWelder( welder.getMachineName() , temperature , current, activeTime ) );
         }
     }
 
@@ -87,7 +85,7 @@ public class Main {
                 double current = (ran.nextDouble()*200);
                 double activeTime = (ran.nextDouble()*120);
 
-                welder.changeData( new DataWelder( temperature , current, activeTime ) );
+                welder.changeData( new DataWelder( welder.getMachineName() , temperature , current, activeTime ) );
             }, (long) (Math.random() * 5), TimeUnit.SECONDS);
 
         }

@@ -1,6 +1,6 @@
 package data;
 
-public class DataLathe extends Data {
+public class DataLathe extends DataMachine {
     private int rotationSpeed;
     private boolean collision;
 
