@@ -14,7 +14,7 @@ public class WeldMachineMaker {
         return new Welder( name , minTemperature , maxTemperature , nominalCurrent , activeTimeThreshold );
     }
 
-    public static Welder welderCreation ( ) {
+    public static void welderCreation ( ) {
         JLabel 	name = new JLabel ( "Please insert the welder's name: " ) ,
                 nominalCurrent = new JLabel( "Please insert the CURRENT value given by the factory: " ),
                 minTemperature = new JLabel( "Please insert the MINIMUM temperature handled by the machine: " ),
@@ -40,7 +40,6 @@ public class WeldMachineMaker {
             return null;
         }
         Main.addWelder((Welder)newMachine( tfName.getText() , Double.parseDouble( tfMinTemp.getText()) , Double.parseDouble(tfMaxTemp.getText()) , Double.parseDouble(tfCurrent.getText()) , Double.parseDouble(tfActiveTime.getText()) ));
-        return (Welder)newMachine( tfName.getText() , Double.parseDouble( tfMinTemp.getText()) , Double.parseDouble(tfMaxTemp.getText()) , Double.parseDouble(tfCurrent.getText()) , Double.parseDouble(tfActiveTime.getText()) );
     }
 
 
