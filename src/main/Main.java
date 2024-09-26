@@ -21,7 +21,7 @@ public class Main {
     private static final WeldMachineMaker WELD_MACHINE_MAKER = new WeldMachineMaker();
     private static final ArrayList<Welder> WELD_MACHINES = new ArrayList<>();
     private static final ArrayList<Lathe> LATHE_MACHINES = new ArrayList<>();
-    private static Mediator MEDIATOR = new Mediator();
+    private static Mediator MEDIATOR = Mediator.getInstance();
 
     public static void main(String[] args) throws InterruptedException {
         MEDIATOR = MEDIATOR.getInstance();

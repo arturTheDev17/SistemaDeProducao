@@ -13,13 +13,16 @@ public class Mediator implements Observer, Observable {
     public ArrayList<Observer> panelObservers = new ArrayList<>();
     public ArrayList<Observer> panelEmployees  = new ArrayList<>();
 
-    private Mediator mediator;
-    public Mediator getInstance() {
-        if (this.mediator == null) {
-            this.mediator = new Mediator();
+    private static Mediator mediator;
+
+    private Mediator () {}
+
+    public static Mediator getInstance() {
+        if (mediator == null) {
+            mediator = new Mediator();
         }
 
-        return this.mediator;
+        return mediator;
     }
 
     @Override
