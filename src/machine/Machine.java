@@ -4,7 +4,7 @@ import data.DataMachine;
 import structure.*;
 
 public abstract class Machine implements Observable {
-
+    //TODO flyweight no mediator, mas é chato
     private Mediator mediator;
     private String machineName;
     private double maxTemperature;
@@ -16,9 +16,6 @@ public abstract class Machine implements Observable {
         this.minTemperature = minTemperature;
     }
 
-    public Machine () {
-
-    }
     public Mediator getMediator() {
         return mediator;
     }
@@ -33,7 +30,6 @@ public abstract class Machine implements Observable {
         this.mediator = null;
     }
 
-    //sensor atualizou
     public abstract void changeData(DataMachine dataMachine);
 
     public String getMachineName() {

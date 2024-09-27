@@ -26,6 +26,10 @@ public class Welder extends Machine {
 
     private DataWelder data;
 
+    public DataWelder getData() {
+        return data;
+    }
+
     @Override
     public void publish( Data dataMachine) {
         getMediator().update(dataMachine);

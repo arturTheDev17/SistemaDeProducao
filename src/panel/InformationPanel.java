@@ -4,11 +4,20 @@ import data.Data;
 import data.DataMachine;
 import data.DataLathe;
 import data.DataWelder;
+import factory.LatheMachineMaker;
 import factory.WeldMachineMaker;
+import machine.Lathe;
+import machine.Machine;
+import machine.Welder;
+import main.Main;
 import structure.Observer;
 
+import javax.crypto.Mac;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,6 +69,9 @@ public class InformationPanel implements Observer {
         JButton buttonWelder = new JButton("Subscribe a new welder");
         buttonWelder.setBounds( 380 , 660, 250, buttonWelder.getPreferredSize().height);
 
+//        JButton buttonRemoveWelder = new JButton( "Remove a welder");
+//        buttonRemoveWelder.setBounds(50 , 660, 250, buttonWelder.getPreferredSize().height);
+
         //Create the button of the page of Welders
         JButton buttonLathe = new JButton("Subscribe a new lathe");
         buttonLathe.setBounds( 380 , 660, 250, buttonLathe.getPreferredSize().height);
@@ -93,11 +105,19 @@ public class InformationPanel implements Observer {
 
         // Cria um JDialog para a aplicação
         JDialog dialog = new JDialog();
-        dialog.setTitle("Lista de Maquinas");
+//        dialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        dialog.setTitle("All operating machines");
         dialog.setSize(700, 800);
-        dialog.setLocationRelativeTo(null);
+        dialog.setLocation( 200 , 150 );
         dialog.setLayout(null);
         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//        dialog.addWindowListener(new WindowAdapter() {
+//
+//            @Override
+//            public void windowClosing(WindowEvent e) {
+//                System.exit(0);
+//            }
+//        });
 
         // Cria um JTabbedPane para a aplicação
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -113,6 +133,7 @@ public class InformationPanel implements Observer {
         panelWelders.add(tituloWelder);
         panelWelders.add(scrollPaneWelder);
         panelWelders.add(buttonWelder);
+//        panelWelders.add(buttonRemoveWelder);
         panelWelders.add(erroWelder);
 
         // Cria um JPanel para a aba de Lathes
@@ -127,7 +148,6 @@ public class InformationPanel implements Observer {
         panelLathes.add(buttonLathe);
         panelLathes.add(erroLathe);
 
-
         // Adiciona as abas no JDialog
         tabbedPane.add("Welders", panelWelders);
         tabbedPane.add("Lathes", panelLathes);
@@ -137,10 +157,38 @@ public class InformationPanel implements Observer {
         dialog.setVisible(true);
 
         buttonWelder.addActionListener(e -> {
-
-            WeldMachineMaker.welderCreation();
-
+            WeldMachineMaker.getInstance().machineCreation();
         });
+
+//        buttonRemoveWelder.addActionListener(e -> {
+//
+//            if (WELDERS_LIST.getSelectedIndex() != -1) {
+//                MACHINES_DATA.remove(WELDERS_LIST.getSelected);
+//            }
+//            System.out.println(WELDERS_LIST.getComponentCount());
+//            getMachinesData("
+//            popupRemove(  );
+//
+//        });
+        buttonLathe.addActionListener(e -> {
+            LatheMachineMaker.getInstance().machineCreation();
+        });
+
+    }
+
+    private void popupRemove(Machine machine) {
+        JLabel name = new JLabel ( "Are you sure you want to remove " + machine.getMachineName() + "?" );
+
+        int option = 0;
+
+        option = JOptionPane.showConfirmDialog
+                ( null , name , "Confirm exclude" , JOptionPane.DEFAULT_OPTION , JOptionPane.WARNING_MESSAGE );
+
+        if ( option == -1 ) {
+            return;
+        }
+
+        Main.removeWelder( machine.getMachineName() );
     }
 
     private void updateDataScreen() {
@@ -155,7 +203,7 @@ public class InformationPanel implements Observer {
         // Inicia a lista de máquinas
         DefaultListModel listModel = new DefaultListModel<>();
 
-        for(Map.Entry<String, DataMachine> entry : MACHINES_DATA.entrySet()) {
+        for (Map.Entry<String, DataMachine> entry : MACHINES_DATA.entrySet()) {
             String key = entry.getKey();
             DataMachine value = entry.getValue();
 
@@ -176,17 +224,17 @@ public class InformationPanel implements Observer {
                 setText(
                         "<html>\u200E<br/>"+
                         "Machine name: " + lathe.getMachineName() +
-                        "<br/>Temperature: " + (lathe.getTemperature() > 60 ? "<span style=\"color: #FF0000\">" + lathe.getTemperature() + "</span>" : "<span style=\"color: #00DD00\">" + lathe.getTemperature()) + "</span>" +
-                        "<br/>Rotation Speed: " + (lathe.getRotationSpeed() > 6000 ? "<span style=\"color: #FF0000\">" + lathe.getRotationSpeed() + "</span>" : "<span style=\"color: #00DD00\">" + lathe.getRotationSpeed()) + "</span>" +
+                        "<br/>Temperature: " + (lathe.getTemperature() < lathe.getParameters()[0] || lathe.getTemperature() > lathe.getParameters()[1] ? "<span style=\"color: #FF0000\">" + lathe.getTemperature() + "</span>" : "<span style=\"color: #00DD00\">" + lathe.getTemperature()) + "</span>" +
+                        "<br/>Rotation Speed: " + (lathe.getRotationSpeed() > lathe.getParameters()[2] ? "<span style=\"color: #FF0000\">" + lathe.getRotationSpeed() + "</span>" : "<span style=\"color: #00DD00\">" + lathe.getRotationSpeed()) + "</span>" +
                         "<br/>Collision: " + (lathe.isCollision() ? "<span style=\"color: #FF0000\">" + lathe.isCollision() + "</span>" : "<span style=\"color: #00DD00\">" +  lathe.isCollision()) + "</span>" + "<br/>\u200E"
                 );
             } else if (value instanceof DataWelder welder) {
                 setText(
                         "<html>\u200E<br/>"+
                         "Machine name: " + welder.getMachineName() +
-                        "<br/>Temperature: " + (welder.getTemperature() > 60 ? "<span style=\"color: #FF0000\">" + welder.getTemperature() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getTemperature()) + "</span>" +
-                        "<br/>Current: " + (welder.getCurrent()  > 120 ? "<span style=\"color: #FF0000\">" + welder.getCurrent() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getCurrent()) + "</span>" +
-                        "<br/>Active time: " + (welder.getActiveTime()  > 60 ? "<span style=\"color: #FF0000\">" + welder.getActiveTime() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getActiveTime()) + "</span>" + "<br/>\u200E"
+                        "<br/>Temperature: " + (welder.getTemperature() < welder.getParameters()[0] || welder.getTemperature() > welder.getParameters()[1] ? "<span style=\"color: #FF0000\">" + welder.getTemperature() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getTemperature()) + "</span>" +
+                        "<br/>Current: " + (welder.getCurrent()  > welder.getParameters()[2] ? "<span style=\"color: #FF0000\">" + welder.getCurrent() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getCurrent()) + "</span>" +
+                        "<br/>Active time: " + (welder.getActiveTime()  > welder.getParameters()[3] ? "<span style=\"color: #FF0000\">" + welder.getActiveTime() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getActiveTime()) + "</span>" + "<br/>\u200E"
                 );
             }
 

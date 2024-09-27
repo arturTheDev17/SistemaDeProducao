@@ -12,12 +12,6 @@ public class DataLathe extends DataMachine {
         this.collision = collision;
     };
 
-    public DataLathe(double temperature, int rotationSpeed, boolean collision ) {
-        super(temperature);
-        this.rotationSpeed = rotationSpeed;
-        this.collision = collision;
-    };
-
     @Override
     public String toString() {
         return super.toString() +

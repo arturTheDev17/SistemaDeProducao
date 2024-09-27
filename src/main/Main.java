@@ -6,6 +6,7 @@ import factory.LatheMachineMaker;
 import factory.WeldMachineMaker;
 import machine.Lathe;
 import machine.Welder;
+import panel.EmployeePanel;
 import panel.InformationPanel;
 import structure.Mediator;
 
@@ -16,33 +17,34 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-
-    private static final LatheMachineMaker LATHE_MACHINE_MAKER = new LatheMachineMaker();
-    private static final WeldMachineMaker WELD_MACHINE_MAKER = new WeldMachineMaker();
+    private static final WeldMachineMaker WELDER_MAKER = new WeldMachineMaker();
+    private static final LatheMachineMaker LATHE_MAKER = new LatheMachineMaker();
     private static final ArrayList<Welder> WELD_MACHINES = new ArrayList<>();
     private static final ArrayList<Lathe> LATHE_MACHINES = new ArrayList<>();
+
     private static Mediator MEDIATOR = Mediator.getInstance();
 
     public static void main(String[] args) throws InterruptedException {
-        MEDIATOR = MEDIATOR.getInstance();
+        MEDIATOR = Mediator.getInstance();
 
         //Criar as maquinas
         for (int i = 0; i < 5; i++) {
-            WELD_MACHINES.add((Welder) WeldMachineMaker.newMachine());
+            WELD_MACHINES.add((Welder) WELDER_MAKER.newMachine());
             WELD_MACHINES.get(i).subscribe( MEDIATOR );
         }
-//
-//        for (int i = 0; i < 5; i++) {
-//            LATHE_MACHINES.add((Lathe) LATHE_MACHINE_MAKER.newMachine());
-//            LATHE_MACHINES.get(i).subscribe( MEDIATOR );
-//            LATHE_MACHINES.get(i).changeData(new DataLathe("Lathe " + i, 30, 3000, false));
-//        }
 
-        MEDIATOR.subscribe( new InformationPanel());
+        for (int i = 0; i < 5; i++) {
+            LATHE_MACHINES.add((Lathe) LATHE_MAKER.newMachine());
+            LATHE_MACHINES.get(i).subscribe( MEDIATOR );
+        }
+
+        MEDIATOR.subscribe( new InformationPanel() );
+        MEDIATOR.subscribe( new EmployeePanel()    );
+
         //gerador de dados aleatorios
         while (true) {
             randomizerWelderDataAsync();
-//            randomizerLatheDataAsync();
+            randomizerLatheDataAsync();
             Thread.sleep(5000);
         }
     }
@@ -56,12 +58,11 @@ public class Main {
                 double current = (ran.nextDouble()*200);
                 double activeTime = (ran.nextDouble()*120);
 
-                welder.changeData( new DataWelder( new double[]{} , welder.getMachineName() , temperature , current, activeTime ) );
+                welder.changeData( new DataWelder( welder.getData().getParameters() , welder.getMachineName() , temperature , current, activeTime ) );
             }, (long) (Math.random() * 5), TimeUnit.SECONDS);
 
         }
     }
-
     private static void randomizerLatheDataAsync() {
         Random ran = new Random();
         for ( Lathe lathe : LATHE_MACHINES ) {
@@ -72,7 +73,7 @@ public class Main {
                 int rotationSpeed = (ran.nextInt(10000));
                 boolean collision = (ran.nextBoolean());
 
-                lathe.changeData( new DataLathe( temperature , rotationSpeed , collision ) );
+                lathe.changeData( new DataLathe( lathe.getData().getParameters() , lathe.getMachineName(), temperature, rotationSpeed, collision ) );
             }, (long) (Math.random() * 5), TimeUnit.SECONDS);
         }
     }
@@ -81,5 +82,20 @@ public class Main {
         WELD_MACHINES.add(welder);
         welder.subscribe(MEDIATOR);
     }
-
+    public static void removeWelder(String name) {
+        for ( Welder welder : WELD_MACHINES ) {
+            if (name.equals(welder.getMachineName())) {
+                WELD_MACHINES.remove(welder);
+                welder.unsubscribe(MEDIATOR);
+            }
+        }
+    }
+    public static void addLathe(Lathe lathe) {
+        LATHE_MACHINES.add(lathe);
+        lathe.subscribe(MEDIATOR);
+    }
+    public static void removeLathe(Lathe lathe) {
+        LATHE_MACHINES.remove(lathe);
+        lathe.unsubscribe(MEDIATOR);
+    }
 }

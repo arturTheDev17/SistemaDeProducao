@@ -5,16 +5,25 @@ import machine.Machine;
 import machine.Welder;
 import javax.swing.*;
 
-public class WeldMachineMaker {
-    public static Machine newMachine() {
+public class WeldMachineMaker extends MachineMaker {
+
+    private static WeldMachineMaker machineMaker;
+    public static WeldMachineMaker getInstance() {
+        if (machineMaker == null) {
+            machineMaker = new WeldMachineMaker();
+        }
+        return machineMaker;
+    }
+    @Override
+    public Machine newMachine() {
         return new Welder();
     }
 
-    public static Machine newMachine( String name , double minTemperature , double maxTemperature , double nominalCurrent , double activeTimeThreshold ) {
+    public Machine newMachine( String name , double minTemperature , double maxTemperature , double nominalCurrent , double activeTimeThreshold) {
         return new Welder( name , minTemperature , maxTemperature , nominalCurrent , activeTimeThreshold );
     }
-
-    public static void welderCreation ( ) {
+    @Override
+    public void machineCreation() {
         JLabel 	name = new JLabel ( "Please insert the welder's name: " ) ,
                 nominalCurrent = new JLabel( "Please insert the CURRENT value given by the factory: " ),
                 minTemperature = new JLabel( "Please insert the MINIMUM temperature handled by the machine: " ),
@@ -33,16 +42,13 @@ public class WeldMachineMaker {
         while ( option != -1 && ( tfName.getText().isBlank() || !tfCurrent.getText().matches( "^[0-9]+$" ) ||
                 !tfMinTemp.getText().matches( "^-?\\d+$" ) || !tfMaxTemp.getText().matches( "^[0-9]+$" ) || !tfActiveTime.getText().matches( "^[0-9]+$" ) ) ) {
                 option = JOptionPane.showConfirmDialog
-                    ( null , objects , "Cadastrar Motor elétrico WEG®" , JOptionPane.DEFAULT_OPTION , JOptionPane.DEFAULT_OPTION );
+                    ( null , objects , "Cadastrar uma máquina" , JOptionPane.DEFAULT_OPTION , JOptionPane.DEFAULT_OPTION );
         }
 
         if ( option == -1 ) {
-            return null;
+            return;
         }
-        Main.addWelder((Welder)newMachine( tfName.getText() , Double.parseDouble( tfMinTemp.getText()) , Double.parseDouble(tfMaxTemp.getText()) , Double.parseDouble(tfCurrent.getText()) , Double.parseDouble(tfActiveTime.getText()) ));
+        Main.addWelder((Welder)this.newMachine( tfName.getText() , Double.parseDouble( tfMinTemp.getText()) , Double.parseDouble(tfMaxTemp.getText()) , Double.parseDouble(tfCurrent.getText()) , Double.parseDouble(tfActiveTime.getText()) ));
     }
-
-
-
 
 }
