@@ -1,23 +1,34 @@
-package machine;
+package machine2;
 
 import data.DataMachine;
-import structure.*;
+import structure.Mediator;
+import structure.Observable;
+import structure.Observer;
+
+import java.util.HashMap;
 
 public abstract class Machine implements Observable {
-    //TODO flyweight no mediator, mas é chato
-    private Mediator mediator;
-    private String machineName;
-    private double maxTemperature;
-    private double minTemperature;
 
-    public Machine ( String name , double minTemperature , double maxTemperature ) {
-        this.machineName = name;
-        this.maxTemperature = maxTemperature;
-        this.minTemperature = minTemperature;
+    private Mediator mediator;
+
+    private final HashMap<String , Object> ATRIBUTTES = new HashMap<>();
+
+    /*
+     * if (null) -> 1 dos dois ou if (checkbox) -> boolean if(2 null) -> erro
+     * else ( verifica minimo e maximo )
+     * ISSO É PARA ADICIONAR MODELO
+     * */
+
+    public Machine ( ) {
+
     }
 
     public Mediator getMediator() {
         return mediator;
+    }
+
+    public void addAttribute( String name , Object value ) {
+        ATRIBUTTES.put( name , value );
     }
 
     @Override
@@ -32,15 +43,4 @@ public abstract class Machine implements Observable {
 
     public abstract void changeData(DataMachine dataMachine);
 
-    public String getMachineName() {
-        return machineName;
-    }
-
-    public double getMinTemperature() {
-        return minTemperature;
-    }
-
-    public double getMaxTemperature() {
-        return maxTemperature;
-    }
 }
