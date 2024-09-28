@@ -1,20 +1,8 @@
 package main;
 
-import data.DataLathe;
-import data.DataWelder;
-import factory.LatheMachineMaker;
-import factory.WeldMachineMaker;
-import machine.Lathe;
-import machine.Welder;
 import panel.EmployeePanel;
 import panel.InformationPanel;
 import structure.Mediator;
-
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
 //    private static final WeldMachineMaker WELDER_MAKER = new WeldMachineMaker();

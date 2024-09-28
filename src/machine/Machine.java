@@ -1,5 +1,6 @@
-package machine2;
+package machine;
 
+import data.Data;
 import data.DataMachine;
 import structure.Mediator;
 import structure.Observable;
@@ -7,28 +8,23 @@ import structure.Observer;
 
 import java.util.HashMap;
 
-public abstract class Machine implements Observable {
+public class Machine implements Observable {
 
     private Mediator mediator;
 
-    private final HashMap<String , Object> ATRIBUTTES = new HashMap<>();
+    private final DataMachine ownData = new DataMachine();
 
-    /*
-     * if (null) -> 1 dos dois ou if (checkbox) -> boolean if(2 null) -> erro
+    /* if (null) -> 1 dos dois ou if (checkbox) -> boolean if(2 null) -> erro
      * else ( verifica minimo e maximo )
      * ISSO É PARA ADICIONAR MODELO
      * */
-
-    public Machine ( ) {
-
-    }
 
     public Mediator getMediator() {
         return mediator;
     }
 
     public void addAttribute( String name , Object value ) {
-        ATRIBUTTES.put( name , value );
+        ownData.addAttribute( name, value );
     }
 
     @Override
@@ -41,6 +37,12 @@ public abstract class Machine implements Observable {
         this.mediator = null;
     }
 
-    public abstract void changeData(DataMachine dataMachine);
+    public void changeData(DataMachine dataMachine){
+        publish( dataMachine );
+    }
 
+    @Override
+    public void publish(Data data) {
+
+    }
 }

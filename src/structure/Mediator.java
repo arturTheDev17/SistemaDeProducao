@@ -38,42 +38,41 @@ public class Mediator implements Observer, Observable {
             this.panelEmployees.add(observer);
         }
     }
+    @Override
+    public void unsubscribe(Observer observer) {
+        this.panelObservers.remove(observer);
+    }
+
 
     @Override
     public void publish(Data dataMachine) {
         for( Observer observer : panelObservers ) {
             observer.update(dataMachine);
         }
-        for( Observer observer : panelEmployees) {
-            DataEmployee dataEmployee = formatter( dataMachine );
-            observer.update(dataEmployee);
-        }
+//        for( Observer observer : panelEmployees) {
+//            DataEmployee dataEmployee = formatter( dataMachine );
+//            observer.update(dataEmployee);
+//        }
     }
 
-    private static DataEmployee formatter( Data dataMachine ) {
-        ArrayList<String> problems = new ArrayList<>();
-        if ( dataMachine instanceof DataWelder dataWelder ) {
-
-            if ( dataWelder.getParameters()[0] > dataWelder.getTemperature() ){
-                problems.add( "Frozen" );
-            }
-            if ( dataWelder.getParameters()[1] < dataWelder.getTemperature() ){
-                problems.add( "Overheated" );
-            }
-            if ( dataWelder.getParameters()[2] < dataWelder.getCurrent() ){
-                problems.add( "Excessive Current" );
-            }
-            if ( dataWelder.getParameters()[3] < dataWelder.getActiveTime() ) {
-                problems.add("Excessive Active Time");
-            }
-        }
-        return new DataEmployee( problems , "Operator" ,((DataMachine)dataMachine).getMachineName() );
-
-    }
-
-    @Override
-    public void unsubscribe(Observer observer) {
-        this.panelObservers.remove(observer);
-    }
-
+//    private static DataEmployee formatter( Data dataMachine ) {
+//        ArrayList<String> problems = new ArrayList<>();
+//        if ( dataMachine instanceof DataWelder dataWelder ) {
+//
+//            if ( dataWelder.getParameters()[0] > dataWelder.getTemperature() ){
+//                problems.add( "Frozen" );
+//            }
+//            if ( dataWelder.getParameters()[1] < dataWelder.getTemperature() ){
+//                problems.add( "Overheated" );
+//            }
+//            if ( dataWelder.getParameters()[2] < dataWelder.getCurrent() ){
+//                problems.add( "Excessive Current" );
+//            }
+//            if ( dataWelder.getParameters()[3] < dataWelder.getActiveTime() ) {
+//                problems.add("Excessive Active Time");
+//            }
+//        }
+//        return new DataEmployee( problems , "Operator" ,((DataMachine)dataMachine).getMachineName() );
+//
+//    }
 }

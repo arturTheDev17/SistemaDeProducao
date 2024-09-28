@@ -4,20 +4,13 @@ import data.Data;
 import data.DataMachine;
 import data.DataLathe;
 import data.DataWelder;
-import factory.LatheMachineMaker;
 import factory.WeldMachineMaker;
-import machine.Lathe;
 import machine.Machine;
-import machine.Welder;
 import main.Main;
 import structure.Observer;
 
-import javax.crypto.Mac;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -171,25 +164,25 @@ public class InformationPanel implements Observer {
 //
 //        });
         buttonLathe.addActionListener(e -> {
-            LatheMachineMaker.getInstance().machineCreation();
+            //LatheMachineMaker.getInstance().machineCreation();
         });
 
     }
 
-    private void popupRemove(Machine machine) {
-        JLabel name = new JLabel ( "Are you sure you want to remove " + machine.getMachineName() + "?" );
-
-        int option = 0;
-
-        option = JOptionPane.showConfirmDialog
-                ( null , name , "Confirm exclude" , JOptionPane.DEFAULT_OPTION , JOptionPane.WARNING_MESSAGE );
-
-        if ( option == -1 ) {
-            return;
-        }
-
-        Main.removeWelder( machine.getMachineName() );
-    }
+//    private void popupRemove(Machine machine) {
+//        JLabel name = new JLabel ( "Are you sure you want to remove " + machine.getMachineName() + "?" );
+//
+//        int option = 0;
+//
+//        option = JOptionPane.showConfirmDialog
+//                ( null , name , "Confirm exclude" , JOptionPane.DEFAULT_OPTION , JOptionPane.WARNING_MESSAGE );
+//
+//        if ( option == -1 ) {
+//            return;
+//        }
+//
+//        Main.removeWelder( machine.getMachineName() );
+//    }
 
     private void updateDataScreen() {
         WELDERS_LIST.setModel(getMachinesData("DataWelder"));
