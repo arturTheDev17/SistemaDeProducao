@@ -2,33 +2,50 @@ package panel;
 
 import data.Data;
 import data.DataMachine;
-import data.DataLathe;
-import data.DataWelder;
-import factory.WeldMachineMaker;
-import machine.Machine;
-import main.Main;
 import structure.Observer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The InformationPanel class implements the Observer interface and is responsible
+ * for displaying information about subscribed machines. It updates the UI when new
+ * data about machines is received.
+ */
 public class InformationPanel implements Observer {
 
-    public static final Map<String, DataMachine> MACHINES_DATA = new HashMap<String, DataMachine>();
+    // Map to store data of machines, keyed by machine name
+    public static final Map<String, DataMachine> MACHINES_DATA = new HashMap<>();
+
+    // Flag to track if the UI screen is active
     private boolean screenActive = false;
 
+    /**
+     * Updates the panel with new data received from the observable.
+     *
+     * @param dataMachine The new data to update the panel with.
+     */
     @Override
     public void update(Data dataMachine) {
         updateListOfMachines((DataMachine) dataMachine);
     }
 
+    /**
+     * Updates the internal list of machines with new data.
+     *
+     * @param dataMachine The DataMachine object containing the machine information.
+     */
     public void updateListOfMachines(DataMachine dataMachine) {
         MACHINES_DATA.put(dataMachine.getMachineName(), dataMachine);
         showData();
     }
 
+    /**
+     * Displays the data on the screen, either by creating a new screen or updating the existing one.
+     */
     private void showData() {
         if (!screenActive) {
             screenActive = true;
@@ -38,202 +55,118 @@ public class InformationPanel implements Observer {
         }
     }
 
-    // Criação da tela
+    // JList to display the machine data
+    private static final JList<String> MACHINES_LIST = new JList<>();
 
-    private static final JList<String> WELDERS_LIST = new JList<>();
-    private static final JList<String> LATHES_LIST = new JList<>();
-
+    /**
+     * Creates and displays the user interface for the Information Panel.
+     */
     private void screen() {
+        // Title for the machines list page
+        JLabel tituloMachine = new JLabel("Subscribed Machines");
+        tituloMachine.setFont(tituloMachine.getFont().deriveFont(24.0f));
+        tituloMachine.setBounds((700 - tituloMachine.getPreferredSize().width) / 2, 20, 300, 50);
 
-        /// Elementos da tela de lista de máquinas
+        // Button to subscribe a new machine
+        JButton buttonMachine = new JButton("Subscribe a new machine");
+        buttonMachine.setBounds(380, 660, 250, buttonMachine.getPreferredSize().height);
 
-        //Cria um título para a página de Welders
-        JLabel tituloWelder = new JLabel("Subscribed Welders");
-        tituloWelder.setFont(tituloWelder.getFont().deriveFont(24.0f));
-        tituloWelder.setBounds((700 - tituloWelder.getPreferredSize().width) / 2, 20, 300, 50);
+        // Placeholder label for error messages
+        JLabel erroMachine = new JLabel();
 
-        //Cria um título para a página de Lathes
-        JLabel tituloLathe = new JLabel("Subscribed Lathes");
-        tituloLathe.setFont(tituloLathe.getFont().deriveFont(24.0f));
-        tituloLathe.setBounds((700 - tituloLathe.getPreferredSize().width) / 2, 20, 300, 50);
+        // Set up the machine list display
+        MACHINES_LIST.setBackground(new java.awt.Color(220, 220, 255));
+        JScrollPane scrollPaneMachine = new JScrollPane();
+        scrollPaneMachine.setBounds(50, 120, 580, 500);
+        scrollPaneMachine.setViewportView(MACHINES_LIST);
+        scrollPaneMachine.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-
-        //Create the button of the page of Welders
-        JButton buttonWelder = new JButton("Subscribe a new welder");
-        buttonWelder.setBounds( 380 , 660, 250, buttonWelder.getPreferredSize().height);
-
-//        JButton buttonRemoveWelder = new JButton( "Remove a welder");
-//        buttonRemoveWelder.setBounds(50 , 660, 250, buttonWelder.getPreferredSize().height);
-
-        //Create the button of the page of Welders
-        JButton buttonLathe = new JButton("Subscribe a new lathe");
-        buttonLathe.setBounds( 380 , 660, 250, buttonLathe.getPreferredSize().height);
-
-        // Jlabel vazio para solucionar erro
-        JLabel erroWelder = new JLabel();
-        JLabel erroLathe = new JLabel();
-
-
-        /// Cria os elementos da JList de Welders
-        WELDERS_LIST.setModel(getMachinesData("DataWelder"));
-        WELDERS_LIST.setCellRenderer(new MyListCellRenderer());
-
-        WELDERS_LIST.setBackground( new java.awt.Color( 220, 220, 255 ) );
-        JScrollPane scrollPaneWelder = new JScrollPane();
-        scrollPaneWelder.setBounds(50, 120, 580, 500);
-        scrollPaneWelder.setViewportView(WELDERS_LIST);
-        scrollPaneWelder.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        /// Cria os elementos da JList de Lathes
-        LATHES_LIST.setModel(getMachinesData("DataLathe"));
-        LATHES_LIST.setCellRenderer(new MyListCellRenderer());
-
-        LATHES_LIST.setBackground( new java.awt.Color( 220, 220, 255 ) );
-        JScrollPane scrollPaneLathe = new JScrollPane();
-        scrollPaneLathe.setBounds(50, 120, 580, 500);
-        scrollPaneLathe.setViewportView(LATHES_LIST);
-        scrollPaneLathe.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        /// Criação da tela com JDialog
-
-        // Cria um JDialog para a aplicação
+        // Create a dialog for the application
         JDialog dialog = new JDialog();
-//        dialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         dialog.setTitle("All operating machines");
         dialog.setSize(700, 800);
-        dialog.setLocation( 200 , 150 );
+        dialog.setLocation(200, 150);
         dialog.setLayout(null);
         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//        dialog.addWindowListener(new WindowAdapter() {
-//
-//            @Override
-//            public void windowClosing(WindowEvent e) {
-//                System.exit(0);
-//            }
-//        });
 
-        // Cria um JTabbedPane para a aplicação
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setSize(700,800);
+        // Add components to the dialog
+        dialog.add(tituloMachine);
+        dialog.add(scrollPaneMachine);
+        dialog.add(buttonMachine);
+        dialog.add(erroMachine);
 
-        // Cria um JPanel para a aba de Welders
-        JPanel panelWelders = new JPanel();
-        panelWelders.setLayout( null );
-        panelWelders.setSize(700, 800);
-        panelWelders.setBackground(Color.white);
-
-        // Adiciona os elementos na aba de welders
-        panelWelders.add(tituloWelder);
-        panelWelders.add(scrollPaneWelder);
-        panelWelders.add(buttonWelder);
-//        panelWelders.add(buttonRemoveWelder);
-        panelWelders.add(erroWelder);
-
-        // Cria um JPanel para a aba de Lathes
-        JPanel panelLathes = new JPanel();
-        panelLathes.setLayout( null );
-        panelLathes.setSize(700, 800);
-        panelLathes.setBackground(Color.white);
-
-        // Adiciona os elementos na aba de welders
-        panelLathes.add(tituloLathe);
-        panelLathes.add(scrollPaneLathe);
-        panelLathes.add(buttonLathe);
-        panelLathes.add(erroLathe);
-
-        // Adiciona as abas no JDialog
-        tabbedPane.add("Welders", panelWelders);
-        tabbedPane.add("Lathes", panelLathes);
-        dialog.add(tabbedPane);
-
-        // Exibe a tela
+        // Display the dialog
         dialog.setVisible(true);
 
-        buttonWelder.addActionListener(e -> {
-            WeldMachineMaker.getInstance().machineCreation();
+        // Action listener for the subscribe button
+        buttonMachine.addActionListener(e -> {
+            AddMachinePanel.screen();
         });
-
-//        buttonRemoveWelder.addActionListener(e -> {
-//
-//            if (WELDERS_LIST.getSelectedIndex() != -1) {
-//                MACHINES_DATA.remove(WELDERS_LIST.getSelected);
-//            }
-//            System.out.println(WELDERS_LIST.getComponentCount());
-//            getMachinesData("
-//            popupRemove(  );
-//
-//        });
-        buttonLathe.addActionListener(e -> {
-            //LatheMachineMaker.getInstance().machineCreation();
-        });
-
     }
 
-//    private void popupRemove(Machine machine) {
-//        JLabel name = new JLabel ( "Are you sure you want to remove " + machine.getMachineName() + "?" );
-//
-//        int option = 0;
-//
-//        option = JOptionPane.showConfirmDialog
-//                ( null , name , "Confirm exclude" , JOptionPane.DEFAULT_OPTION , JOptionPane.WARNING_MESSAGE );
-//
-//        if ( option == -1 ) {
-//            return;
-//        }
-//
-//        Main.removeWelder( machine.getMachineName() );
-//    }
-
+    /**
+     * Updates the data displayed in the machines list.
+     */
     private void updateDataScreen() {
-        WELDERS_LIST.setModel(getMachinesData("DataWelder"));
-        WELDERS_LIST.setCellRenderer(new MyListCellRenderer());
-        LATHES_LIST.setModel(getMachinesData("DataLathe"));
-        LATHES_LIST.setCellRenderer(new MyListCellRenderer());
+        MACHINES_LIST.setModel(getMachinesData());
+        MACHINES_LIST.setCellRenderer(new MyListCellRenderer());
     }
 
-
-    private DefaultListModel getMachinesData(String className) {
-        // Inicia a lista de máquinas
+    /**
+     * Retrieves the machine data and prepares it for display in the JList.
+     *
+     * @return A DefaultListModel containing the machine data entries.
+     */
+    private DefaultListModel getMachinesData() {
+        // Initialize the list of machines
         DefaultListModel listModel = new DefaultListModel<>();
 
         for (Map.Entry<String, DataMachine> entry : MACHINES_DATA.entrySet()) {
-            String key = entry.getKey();
             DataMachine value = entry.getValue();
-
-            if(value.getClass().getSimpleName().equals(className)) {
-                listModel.addElement(value);
-            }
+            listModel.addElement(value);
         }
         return listModel;
     }
 
+    /**
+     * Custom renderer for the JList to format the display of machine data.
+     */
     private class MyListCellRenderer extends DefaultListCellRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-            if (value instanceof DataLathe lathe) {
+            // Format the machine data for display
+            if (value instanceof DataMachine machine) {
+                StringBuilder builder = new StringBuilder();
+                for (String name : machine.getATRIBUTTES().keySet()) {
+                    Serializable thisValue = machine.getATRIBUTTES().get(name);
+
+                    // Format boolean attributes
+                    if (thisValue instanceof Boolean bool) {
+                        builder.append("<br/>" + name + ": " +
+                                (bool ?
+                                        "<span style=\"color: #FF0000\">" + bool + "</span>" :
+                                        "<span style=\"color: #00DD00\">" + bool + "</span>"));
+                    }
+                    // Format double array attributes
+                    else if (thisValue instanceof Double[] array) {
+                        builder.append("<br/>" + name + ": " +
+                                (array[2] < array[0] || array[2] > array[1] ?
+                                        "<span style=\"color: #FF0000\">" + (double) (Math.round(array[2] * 100)) / 100 + "</span>" :
+                                        "<span style=\"color: #00DD00\">" + (double) (Math.round(array[2] * 100)) / 100 + "</span>"));
+                    }
+                }
+
+                // Set the text for the list item
                 setText(
-                        "<html>\u200E<br/>"+
-                        "Machine name: " + lathe.getMachineName() +
-                        "<br/>Temperature: " + (lathe.getTemperature() < lathe.getParameters()[0] || lathe.getTemperature() > lathe.getParameters()[1] ? "<span style=\"color: #FF0000\">" + lathe.getTemperature() + "</span>" : "<span style=\"color: #00DD00\">" + lathe.getTemperature()) + "</span>" +
-                        "<br/>Rotation Speed: " + (lathe.getRotationSpeed() > lathe.getParameters()[2] ? "<span style=\"color: #FF0000\">" + lathe.getRotationSpeed() + "</span>" : "<span style=\"color: #00DD00\">" + lathe.getRotationSpeed()) + "</span>" +
-                        "<br/>Collision: " + (lathe.isCollision() ? "<span style=\"color: #FF0000\">" + lathe.isCollision() + "</span>" : "<span style=\"color: #00DD00\">" +  lathe.isCollision()) + "</span>" + "<br/>\u200E"
-                );
-            } else if (value instanceof DataWelder welder) {
-                setText(
-                        "<html>\u200E<br/>"+
-                        "Machine name: " + welder.getMachineName() +
-                        "<br/>Temperature: " + (welder.getTemperature() < welder.getParameters()[0] || welder.getTemperature() > welder.getParameters()[1] ? "<span style=\"color: #FF0000\">" + welder.getTemperature() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getTemperature()) + "</span>" +
-                        "<br/>Current: " + (welder.getCurrent()  > welder.getParameters()[2] ? "<span style=\"color: #FF0000\">" + welder.getCurrent() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getCurrent()) + "</span>" +
-                        "<br/>Active time: " + (welder.getActiveTime()  > welder.getParameters()[3] ? "<span style=\"color: #FF0000\">" + welder.getActiveTime() + "</span>" : "<span style=\"color: #00DD00\">" + welder.getActiveTime()) + "</span>" + "<br/>\u200E"
+                        "<html>\u200E<br/>" +
+                                "Machine name: " + machine.getMachineName() + builder + "<br/>\u200E"
                 );
             }
 
             return this;
         }
-
     }
-
 }
