@@ -83,13 +83,20 @@ public class Main {
         MACHINES.add(mac);
         mac.subscribe(MEDIATOR);
     }
-}
 
-//    public static void removeWelder(String name) {
-//        for ( Welder welder : WELD_MACHINES ) {
-//            if (name.equals(welder.getMachineName())) {
-//                WELD_MACHINES.remove(welder);
-//                welder.unsubscribe(MEDIATOR);
-//            }
-//        }
-//    }
+    public static void unsubscribeMachine(String machineName) {
+        Machine machine = getMachineByName(machineName);
+        machine.unsubscribe(MEDIATOR);
+        MACHINES.remove(machine);
+    }
+
+    private static Machine getMachineByName(String machineName) {
+        for (Machine machine : MACHINES) {
+            if (machine.getOwnData().getMachineName().equals(machineName)) {
+                return machine;
+            }
+        }
+        return null;
+    }
+
+}

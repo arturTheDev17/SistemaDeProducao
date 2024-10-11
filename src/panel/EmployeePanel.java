@@ -262,4 +262,14 @@ public class EmployeePanel implements Observer {
 
         return problemsFormatted.toString();
     }
+
+    public static void removeMachine(String machineName) {
+        DataEmployee dataEmployee = EMPLOYEES_LOG_ERRORS.get(machineName);
+        if (dataEmployee.getProblems().size() > 0) {
+            amountOfMachinesWthProblems--;
+            amountOfProblems -= dataEmployee.getProblems().size();
+        }
+        EMPLOYEES_LOG_ERRORS.remove(machineName);
+        MACHINES_WITH_PROBLEMS.remove(machineName);
+    }
 }

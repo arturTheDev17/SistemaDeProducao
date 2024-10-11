@@ -7,6 +7,7 @@ import structure.Observer;
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,8 +69,12 @@ public class InformationPanel implements Observer {
         tituloMachine.setBounds((700 - tituloMachine.getPreferredSize().width) / 2, 20, 300, 50);
 
         // Button to subscribe a new machine
-        JButton buttonMachine = new JButton("Subscribe a new machine");
-        buttonMachine.setBounds(380, 660, 250, buttonMachine.getPreferredSize().height);
+        JButton buttonNewMachine = new JButton("Subscribe a new machine");
+        buttonNewMachine.setBounds(380, 660, 250, buttonNewMachine.getPreferredSize().height);
+
+        // Button to remove a subscribed machine
+        JButton buttonRemove = new JButton("Unsubscribe a machine");
+        buttonRemove.setBounds(50, 660, 250, buttonRemove.getPreferredSize().height);
 
         // Placeholder label for error messages
         JLabel erroMachine = new JLabel();
@@ -92,15 +97,26 @@ public class InformationPanel implements Observer {
         // Add components to the dialog
         dialog.add(tituloMachine);
         dialog.add(scrollPaneMachine);
-        dialog.add(buttonMachine);
+        dialog.add(buttonNewMachine);
+        dialog.add(buttonRemove);
         dialog.add(erroMachine);
 
         // Display the dialog
         dialog.setVisible(true);
 
         // Action listener for the subscribe button
-        buttonMachine.addActionListener(e -> {
+        buttonNewMachine.addActionListener(e -> {
             AddMachinePanel.screen();
+        });
+
+        // Action listener for the unsubscribe button
+        buttonRemove.addActionListener(e -> {
+            ArrayList<String> machinesName = new ArrayList<>();
+            for (Map.Entry<String, DataMachine> entry : MACHINES_DATA.entrySet()) {
+                DataMachine value = entry.getValue();
+                machinesName.add(value.getMachineName());
+            }
+            RemoveMachinePanel.screen(machinesName);
         });
     }
 
@@ -168,5 +184,9 @@ public class InformationPanel implements Observer {
 
             return this;
         }
+    }
+
+    public static void removeMachine(String machineName) {
+        MACHINES_DATA.remove(machineName);
     }
 }
