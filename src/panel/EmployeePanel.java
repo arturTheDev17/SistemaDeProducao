@@ -2,29 +2,86 @@ package panel;
 
 import data.Data;
 import data.DataEmployee;
-import data.DataLathe;
-import data.DataWelder;
 import structure.Observer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
+/**
+ * The EmployeePanel class implements the Observer interface and represents
+ * a panel that displays logs and error information for operators (employees)
+ * associated with machines. It updates the UI when new log data is available.
+ */
 public class EmployeePanel implements Observer {
 
+    // Map to store the log errors of employees, keyed by machine name
     private static final Map<String, DataEmployee> EMPLOYEES_LOG_ERRORS = new HashMap<>();
+
+    private final static ArrayList<String> MACHINES_WITH_PROBLEMS = new ArrayList<>();
+    // Flag to track if the UI screen is active
     private static boolean screenActive = false;
 
+    // Counters for machines with problems and total problems
+    private static int amountOfMachinesWthProblems = 0;
+    private static int amountOfProblems = 0;
+
+    private static JLabel labelCountMachinesWithProblems = new JLabel("teste");
+    private static JLabel labelAmountOfProblems = new JLabel("teste");
+
+    /**
+     * Updates the panel with new data received from the observable.
+     *
+     * @param data The new data to update the panel with.
+     */
     @Override
     public void update(Data data) {
         updateListOfLogs((DataEmployee) data);
     }
 
+    /**
+     * Updates the internal log list with the new DataEmployee information.
+     *
+     * @param dataEmployee The DataEmployee object containing the log information.
+     */
     private void updateListOfLogs(DataEmployee dataEmployee) {
+        // Check if there is existing data for the machine
+        if (EMPLOYEES_LOG_ERRORS.get(dataEmployee.getMachineName()) != null) {
+            DataEmployee oldData = EMPLOYEES_LOG_ERRORS.get(dataEmployee.getMachineName());
+
+            // Update the amount of problems based on the new data
+            if (oldData.getProblems().size() < dataEmployee.getProblems().size()) {
+                amountOfProblems += dataEmployee.getProblems().size() - oldData.getProblems().size();
+            } else if (oldData.getProblems().size() > dataEmployee.getProblems().size()) {
+                amountOfProblems -= oldData.getProblems().size() - dataEmployee.getProblems().size();
+            }
+
+            // Update the count of machines with problems
+            if (oldData.getProblems().isEmpty() && !dataEmployee.getProblems().isEmpty()) {
+                amountOfMachinesWthProblems++;
+                if (!MACHINES_WITH_PROBLEMS.contains(dataEmployee.getMachineName())) {
+                    MACHINES_WITH_PROBLEMS.add(dataEmployee.getMachineName());
+                }
+            } else if (!oldData.getProblems().isEmpty() && dataEmployee.getProblems().isEmpty()) {
+                amountOfMachinesWthProblems--;
+                MACHINES_WITH_PROBLEMS.remove(dataEmployee.getMachineName());
+            }
+        } else {
+            if (dataEmployee.getProblems().size() > 0) {
+                amountOfProblems += dataEmployee.getProblems().size();
+                amountOfMachinesWthProblems++;
+                MACHINES_WITH_PROBLEMS.add(dataEmployee.getMachineName());
+            }
+        }
+
+        // Update the log errors map
         EMPLOYEES_LOG_ERRORS.put(dataEmployee.getMachineName(), dataEmployee);
         showData();
     }
 
+    /**
+     * Displays the data on the screen, either by creating a new screen or updating the existing one.
+     */
     private void showData() {
         if (!screenActive) {
             screenActive = true;
@@ -34,184 +91,185 @@ public class EmployeePanel implements Observer {
         }
     }
 
+    /**
+     * JList to display the error logs
+     */
+    private static final JList<String> LOG_ERRORS_LIST = new JList<>();
 
-    //  Criação da tela
-      private static final JList<String> MANAGERS_LOG_ERRORS = new JList<>();
-      private static final JList<String> OPERATORS_LOG_ERRORS = new JList<>();
+    /**
+     * JList to display the error logs
+     */
+    private static final JList<String> MACHINES_WITH_PROBLEMS_LIST = new JList<>();
 
+    /**
+     * Creates and displays the user interface for the Employee Panel.
+     */
     private void screen() {
-        /// Elementos da tela de lista de Employees
-
-        //Cria um título para a página de Operators
+        // Title for the operators' log page
         JLabel tituloOperator = new JLabel("Subscribed Operators");
         tituloOperator.setFont(tituloOperator.getFont().deriveFont(24.0f));
         tituloOperator.setBounds((700 - tituloOperator.getPreferredSize().width) / 2, 20, 300, 50);
 
-        //Cria um título para a página de Managers
-        JLabel tituloManager = new JLabel("Subscribed Managers");
-        tituloManager.setFont(tituloManager.getFont().deriveFont(24.0f));
-        tituloManager.setBounds((700 - tituloManager.getPreferredSize().width) / 2, 20, 300, 50);
-
-        // Jlabel vazio para solucionar erro
+        // Placeholder labels
         JLabel erroOperator = new JLabel();
         JLabel erroManager = new JLabel();
 
-        /// Cria os elementos da JList de Operators
-        OPERATORS_LOG_ERRORS.setModel(getLogData("Operator"));
-        OPERATORS_LOG_ERRORS.setCellRenderer(new MyListCellRenderer());
+        // Set up the log errors list model
+        LOG_ERRORS_LIST.setModel(getLogData("Employee"));
+        LOG_ERRORS_LIST.setCellRenderer(new MyListCellRenderer());
 
-        OPERATORS_LOG_ERRORS.setBackground( new java.awt.Color( 220, 220, 255 ) );
+        LOG_ERRORS_LIST.setBackground(new java.awt.Color(220, 220, 255));
         JScrollPane scrollPaneOperators = new JScrollPane();
         scrollPaneOperators.setBounds(50, 120, 580, 500);
-        scrollPaneOperators.setViewportView(OPERATORS_LOG_ERRORS);
+        scrollPaneOperators.setViewportView(LOG_ERRORS_LIST);
         scrollPaneOperators.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        /// Cria os elementos da JList de Lathes
-        MANAGERS_LOG_ERRORS.setModel(getLogData("Manager"));
-        MANAGERS_LOG_ERRORS.setCellRenderer(new MyListCellRenderer());
-
-        MANAGERS_LOG_ERRORS.setBackground( new java.awt.Color( 220, 220, 255 ) );
-        JScrollPane scrollPaneManagers = new JScrollPane();
-        scrollPaneManagers.setBounds(50, 120, 580, 500);
-        scrollPaneManagers.setViewportView(MANAGERS_LOG_ERRORS);
-        scrollPaneManagers.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        /// Criação da tela com JDialog
-
-        // Cria um JDialog para a aplicação
+        // Create the main dialog for the application
         JDialog dialog = new JDialog();
         dialog.setTitle("Logs of the machines");
         dialog.setSize(700, 800);
-        dialog.setLocation( 1000 , 150 );
+        dialog.setLocation(1000, 150);
         dialog.setLayout(null);
         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        //Cria um JTabbedPane para a aplicação
+        // Create a tabbed pane for the application
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setSize(700,800);
+        tabbedPane.setSize(700, 800);
 
-        // Cria um JPanel para a aba de operadores
+        // Panel for operators
         JPanel panelOperators = new JPanel();
-        panelOperators.setLayout( null );
+        panelOperators.setLayout(null);
         panelOperators.setSize(700, 800);
         panelOperators.setBackground(Color.white);
 
-        // Adiciona os elementos na aba de welders
+        // Add components to the operators panel
         panelOperators.add(tituloOperator);
         panelOperators.add(scrollPaneOperators);
         panelOperators.add(erroOperator);
 
-        // Cria um JPanel para a aba de managers
+        // Panel for managers
         JPanel panelManager = new JPanel();
-        panelManager.setLayout( null );
+        panelManager.setLayout(null);
         panelManager.setSize(700, 800);
         panelManager.setBackground(Color.white);
 
-        // Adiciona os elementos na aba de welders
+        // Title for the managers' page
+        JLabel tituloManager = new JLabel("Manager analytics");
+        tituloManager.setFont(tituloManager.getFont().deriveFont(24.0f));
+        tituloManager.setBounds((700 - tituloManager.getPreferredSize().width) / 2, 20, 300, 50);
+
+        labelCountMachinesWithProblems.setBounds(50, 100, 250, labelCountMachinesWithProblems.getPreferredSize().height);
+        labelAmountOfProblems.setBounds(50, 140, 250, labelAmountOfProblems.getPreferredSize().height);
+
+        JLabel titleListManagers = new JLabel("Machines with problems: ");
+        titleListManagers.setFont(tituloManager.getFont().deriveFont(18.0f));
+        titleListManagers.setBounds(50, 180, 300, 50);
+
+        // Set up the log errors list model
+        MACHINES_WITH_PROBLEMS_LIST.setModel(getLogData("Manager"));
+
+        MACHINES_WITH_PROBLEMS_LIST.setBackground(new java.awt.Color(220, 220, 255));
+        JScrollPane scrollPanelManagers = new JScrollPane();
+        scrollPanelManagers.setBounds(50, 250, 580, 400);
+        scrollPanelManagers.setViewportView(MACHINES_WITH_PROBLEMS_LIST);
+        scrollPanelManagers.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        // Add components to the managers panel
         panelManager.add(tituloManager);
-        panelManager.add(scrollPaneManagers);
+        panelManager.add(labelCountMachinesWithProblems);
+        panelManager.add(labelAmountOfProblems);
+        panelManager.add(titleListManagers);
+        panelManager.add(scrollPanelManagers);
         panelManager.add(erroManager);
 
-        // Adiciona as abas no JDialog
+        // Add tabs to the dialog
         tabbedPane.add("Operators", panelOperators);
-        tabbedPane.add("Manager", panelManager);
+        tabbedPane.add("Managers", panelManager);
         dialog.add(tabbedPane);
 
-        // Exibe a tela
+        // Display the dialog
         dialog.setVisible(true);
-
     }
 
+    /**
+     * Updates the data displayed in the log errors list.
+     */
     private void updateDataScreen() {
-        OPERATORS_LOG_ERRORS.setModel(getLogData("Operator"));
-        OPERATORS_LOG_ERRORS.setCellRenderer(new MyListCellRenderer());
-        MANAGERS_LOG_ERRORS.setModel(getLogData("Manager"));
-        MANAGERS_LOG_ERRORS.setCellRenderer(new MyListCellRenderer());
+        LOG_ERRORS_LIST.setModel(getLogData("Employee"));
+        LOG_ERRORS_LIST.setCellRenderer(new MyListCellRenderer());
+        labelAmountOfProblems.setText("Amount of problems: " + amountOfProblems);
+        labelCountMachinesWithProblems.setText("Machines with problems: " + amountOfMachinesWthProblems);
+        MACHINES_WITH_PROBLEMS_LIST.setModel(getLogData("Manager"));
     }
 
-    private DefaultListModel getLogData(String typeEmployee) {
+    /**
+     * Retrieves the log data and prepares it for display in the JList.
+     *
+     * @return A DefaultListModel containing the log entries.
+     */
+    private DefaultListModel getLogData(String type) {
         DefaultListModel listModel = new DefaultListModel<>();
-
-        for(Map.Entry<String, DataEmployee> entry : EMPLOYEES_LOG_ERRORS.entrySet()) {
-            String key = entry.getKey();
-            DataEmployee value = entry.getValue();
-
-            if(value.getTypeEmployee().equals(typeEmployee)) {
+        if (type.equals("Employee")) {
+            for (Map.Entry<String, DataEmployee> entry : EMPLOYEES_LOG_ERRORS.entrySet()) {
+                DataEmployee value = entry.getValue();
                 listModel.addElement(value);
+            }
+        } else if (type.equals("Manager")) {
+            for (String machineName : MACHINES_WITH_PROBLEMS) {
+                listModel.addElement(machineName);
             }
         }
         return listModel;
     }
 
+    /**
+     * Custom renderer for the JList to format the display of log entries.
+     */
     private class MyListCellRenderer extends DefaultListCellRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-            if (((DataEmployee)value).getTypeEmployee().equals("Operator")) {
-
-                setText(
-                        "<html>\u200E<br/>"+
-                        "<br/> " + (((DataEmployee) value).getMachineName()) + (((DataEmployee) value).getProblems().size() != 0 ?
-
-                                "<span style=\"color: #FF0000\"> " + ((DataEmployee) value).getProblems().size() + " problems </span>"
-
-                                : "<span style=\"color: #00DD00\"> no problems</span>")
-
-                                +
-
-                        "<br/><br/>" + (((DataEmployee) value).getProblems().isEmpty() ?
-
-                                "<span style=\"color: #00DD00\">All fine!</span>"
-
-                                : "<span style=\"color: #FF0000\">Problems: " + formatProblems(((DataEmployee) value).getProblems()) + "</span>"
-
-                                )
-
-
-                        + "<br/>\u200E"
-                );
-            } else if (((DataEmployee)value).getTypeEmployee().equals("Manager")) {
-                setText(
-                        "<html>\u200E<br/>"+
-                        ((DataEmployee) value).getMachineName() +
-                        "<br/> " + (((DataEmployee) value).getMachineName()) + (((DataEmployee) value).getProblems().isEmpty() ?
-                        "<span style=\"color: #FF0000\"> " + ((DataEmployee) value).getProblems().size() + " problems </span>"
-                        : "<span style=\"color: #00DD00\"> no problems</span>") +
-                        "<br/><br/>" + (((DataEmployee) value).getProblems().isEmpty() ?
-                        "Problems:<br/><span style=\"color: #FF0000\">" + formatProblems(((DataEmployee) value).getProblems()) + "</span>"
-                        : "<span style=\"color: #FF0000\">All fine!</span>")
-                        + "<br/>\u200E"
-                );
-            } else {
-                setText(
-                        "<html>\u200E<br/>"+
-                        ((DataEmployee) value).getMachineName() +
-                        "<br/> " + (((DataEmployee) value).getMachineName()) + (((DataEmployee) value).getProblems().isEmpty() ?
-                        "<span style=\"color: #FF0000\"> " + ((DataEmployee) value).getProblems().size() + " problems </span>"
-                        : "<span style=\"color: #00DD00\"> no problems</span>") +
-                        "<br/><br/>" + (((DataEmployee) value).getProblems().isEmpty() ?
-                        "Problems:<br/><span style=\"color: #FF0000\">" + formatProblems(((DataEmployee) value).getProblems()) + "</span>"
-                        : "<span style=\"color: #FF0000\">All fine!</span>")
-                        + "<br/>\u200E"
-                );
-            }
+            // Format the log entry display
+            setText(
+                    "<html>\u200E<br/>" +
+                            "<br/> " + (((DataEmployee) value).getMachineName()) + (((DataEmployee) value).getProblems().size() != 0 ?
+                            "<span style=\"color: #FF0000\"> " + ((DataEmployee) value).getProblems().size() + " problem(s) </span>"
+                            : "<span style=\"color: #00DD00\"> no problems</span>") +
+                            "<br/><br/>" + (((DataEmployee) value).getProblems().isEmpty() ?
+                            "<span style=\"color: #00DD00\">All fine!</span>"
+                            : "<span style=\"color: #FF0000\">Problems: " + formatProblems(((DataEmployee) value).getProblems()) + "</span>") +
+                            "<br/>\u200E"
+            );
 
             return this;
         }
-
     }
 
-
+    /**
+     * Formats the list of problems into a string for display.
+     *
+     * @param problems The list of problems to format.
+     * @return A formatted string of problems.
+     */
     private String formatProblems(ArrayList<String> problems) {
         StringBuilder problemsFormatted = new StringBuilder();
 
-        for( String problem : problems) {
+        for (String problem : problems) {
             problemsFormatted.append("<br/>* ").append(problem);
         }
 
         return problemsFormatted.toString();
     }
 
+    public static void removeMachine(String machineName) {
+        DataEmployee dataEmployee = EMPLOYEES_LOG_ERRORS.get(machineName);
+        if (dataEmployee.getProblems().size() > 0) {
+            amountOfMachinesWthProblems--;
+            amountOfProblems -= dataEmployee.getProblems().size();
+        }
+        EMPLOYEES_LOG_ERRORS.remove(machineName);
+        MACHINES_WITH_PROBLEMS.remove(machineName);
+    }
 }
